@@ -1,4 +1,4 @@
-const CACHE = 'qasas-shell-v3';
+const CACHE = 'qasas-shell-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
