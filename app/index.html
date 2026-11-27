@@ -69,6 +69,8 @@
   }
   .btn svg{width:14px; height:14px; fill:currentColor; flex:none}
   .btn.yt{background:var(--yt)}
+  #tgTop{display:inline-flex; margin-top:10px; background:#229ed9; font-size:14.5px; padding:10px 20px; border-radius:24px}
+  #tgTop svg{width:16px;height:16px}
   .btn.tk{background:#111; border:1px solid #333; color:#fff}
   .btn.fb{background:var(--fb)}
   .btn.dl{background:#1d6b4f}
@@ -116,14 +118,16 @@
   <h1>قصص الأنبياء</h1>
   <p>الحلقات مرتبة بالأنبياء والأجزاء - شاهد أو حمّل للمشاهدة بدون إنترنت</p>
   <button id="installBtn">تثبيت التطبيق على الموبايل</button>
+  <div><a class="btn tg" id="tgTop" href="https://t.me/qisas_anbiya" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M9.04 15.9l-.38 5.36c.55 0 .79-.24 1.08-.53l2.6-2.48 5.38 3.94c.99.55 1.69.26 1.95-.9L23.4 4.4c.31-1.44-.52-2-1.48-1.65L2.4 10.9c-1.41.55-1.39 1.34-.24 1.69l5.02 1.57L18.9 6.3c.55-.36 1.05-.16.64.2L9.04 15.9z"/></svg> حمّل واتفرج أوفلاين على تيليجرام</a></div>
 </header>
 <div id="offlineBar">أنت غير متصل - الحلقات المحمّلة تشتغل بدون إنترنت</div>
 <main id="app"><div class="err" id="loading">جاري التحميل...</div></main>
 <div style="max-width:720px;margin:0 auto;padding:0 14px">
   <div class="note">
     <b>المشاهدة بدون إنترنت:</b>
-    اضغط زر "تحميل الحلقة" تحت أي حلقة وهي متاحة، وبعد ما يخلص التحميل تقدر تتفرج عليها من التطبيق
-    من غير نت خالص. التحميل بيحصل مرة واحدة بس لكل حلقة تختارها.
+    افتح <a href="https://t.me/qisas_anbiya" target="_blank" rel="noopener" style="color:var(--gold)">قناة تيليجرام</a>
+    وحمّل الحلقة اللي تعوزها من هناك مرة واحدة، وبعدها تتفرج عليها من غير نت خالص من جوه تيليجرام.
+    فهرس التطبيق نفسه يشتغل بدون نت بعد أول فتح.
   </div>
 </div>
 <footer>
@@ -235,7 +239,8 @@ function render(){
   $('#chans').innerHTML=
     '<a href="'+esc(DATA.channels.youtube)+'" target="_blank" rel="noopener">يوتيوب</a>'
     +'<a href="'+esc(DATA.channels.tiktok)+'" target="_blank" rel="noopener">تيك توك</a>'
-    +'<a href="'+esc(DATA.channels.facebook)+'" target="_blank" rel="noopener">فيسبوك</a>';
+    +'<a href="'+esc(DATA.channels.facebook)+'" target="_blank" rel="noopener">فيسبوك</a>'
+    +(DATA.channels.telegram?'<a href="'+esc(DATA.channels.telegram)+'" target="_blank" rel="noopener">تيليجرام</a>':'');
   // restore progress for any in-flight downloads
   DATA.prophets.forEach((p,pi)=>p.episodes.forEach((ep,ei)=>{
     const key=epKey(pi,ei), st=dlState[key];
