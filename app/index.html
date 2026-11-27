@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قصص الأنبياء</title>
+<meta name="description" content="حلقات قصص الأنبياء مرتبة بالأنبياء والأجزاء - شاهدها في أي وقت">
+<meta name="theme-color" content="#0d3b2e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="قصص الأنبياء">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --bg:#0b211a; --card:#123128; --card2:#0f2b22; --line:#1d4a3c;
+    --gold:#d8b45a; --gold2:#b8933d; --txt:#f2ede1; --muted:#a8bfb4;
+    --yt:#ff0000; --tk:#25F4EE; --fb:#1877f2;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{
+    font-family:"Segoe UI", Tahoma, "Noto Kufi Arabic", Arial, sans-serif;
+    background:var(--bg); color:var(--txt); min-height:100vh;
+  }
+  header{
+    background:linear-gradient(160deg,#0d3b2e,#0b211a);
+    border-bottom:2px solid var(--gold2);
+    padding:22px 16px 18px; text-align:center; position:sticky; top:0; z-index:5;
+  }
+  header h1{font-size:26px; color:var(--gold); letter-spacing:.5px}
+  header p{color:var(--muted); font-size:13px; margin-top:6px}
+  #installBtn{
+    display:none; margin-top:12px; background:var(--gold); color:#1c1c1c;
+    border:none; border-radius:24px; padding:9px 22px; font-size:15px; font-weight:700;
+    cursor:pointer;
+  }
+  #offlineBar{
+    display:none; background:#5a3d12; color:#ffe6b0; text-align:center;
+    font-size:13px; padding:7px 10px;
+  }
+  main{max-width:720px; margin:0 auto; padding:16px 14px 60px}
+  .prophet{margin-bottom:26px}
+  .prophet>h2{
+    font-size:20px; color:var(--gold); padding:10px 4px;
+    border-bottom:1px solid var(--line); margin-bottom:12px;
+  }
+  .prophet>h2 .ord{
+    display:inline-block; min-width:34px; text-align:center;
+    background:var(--card2); border:1px solid var(--line); border-radius:8px;
+    font-size:14px; color:var(--muted); padding:2px 6px; margin-left:8px;
+  }
+  .ep{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:14px; margin-bottom:12px;
+  }
+  .ep h3{font-size:17px; margin-bottom:10px}
+  .ep h3 .cnt{color:var(--muted); font-size:13px; font-weight:400}
+  .part{
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+    background:var(--card2); border:1px solid var(--line); border-radius:10px;
+    padding:9px 10px; margin-top:8px;
+  }
+  .part .pn{flex:1; min-width:110px; font-size:14px; font-weight:600}
+  .btn{
+    display:inline-flex; align-items:center; gap:5px; text-decoration:none;
+    font-size:12.5px; font-weight:700; border-radius:8px; padding:7px 11px;
+    color:#fff; border:none; cursor:pointer;
+  }
+  .btn svg{width:14px; height:14px; fill:currentColor; flex:none}
+  .btn.yt{background:var(--yt)}
+  .btn.tk{background:#111; border:1px solid #333; color:#fff}
+  .btn.fb{background:var(--fb)}
+  .note{
+    background:var(--card2); border:1px dashed var(--line); border-radius:12px;
+    padding:14px; color:var(--muted); font-size:13.5px; line-height:1.9; margin-top:8px;
+  }
+  .note b{color:var(--gold)}
+  footer{
+    text-align:center; color:var(--muted); font-size:12.5px; padding:18px 12px 30px;
+    border-top:1px solid var(--line);
+  }
+  footer a{color:var(--gold); text-decoration:none}
+  #chans{display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap}
+  #chans a{color:var(--muted); font-size:13px; text-decoration:underline}
+  .err{color:#ffb3b3; text-align:center; padding:30px 10px; font-size:14px}
+</style>
+</head>
+<body>
+<header>
+  <h1>قصص الأنبياء</h1>
+  <p>الحلقات مرتبة بالأنبياء والأجزاء</p>
+  <button id="installBtn">تثبيت التطبيق على الموبايل</button>
+</header>
+<div id="offlineBar">أنت غير متصل الآن - يمكنك تصفح الفهرس، والمشاهدة تحتاج إنترنت</div>
+<main id="app"><div class="err" id="loading">جاري التحميل...</div></main>
+<div style="max-width:720px;margin:0 auto;padding:0 14px">
+  <div class="note">
+    <b>للمشاهدة بدون إنترنت:</b>
+    من تطبيق يوتيوب على الموبايل افتح الفيديو واضغط زر "تنزيل" (حسب توفرها في بلدك)،
+    أو حمّل الحلقات من جوجل درايف بخاصية "إتاحة بدون إنترنت".
+    فهرس التطبيق نفسه يعمل بدون إنترنت بعد أول فتح.
+  </div>
+</div>
+<footer>
+  <div>تابعنا على:</div>
+  <div id="chans"></div>
+  <div style="margin-top:14px"><a href="../">الموقع الرئيسي - قصص الأنبياء مكتوبة</a></div>
+</footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const ytIcon='<svg viewBox="0 0 24 24"><path d="M23 7.5s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 4 12 4 12 4s-4.6 0-7.8.2c-.4.1-1.4.1-2.3 1-.7.7-.9 2.3-.9 2.3S.8 9.4.8 11.3v1.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.2 7.6.2s4.6 0 7.8-.2c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.4c0-1.9-.2-3.8-.2-3.8zM9.8 15.1V8.4l6.2 3.4-6.2 3.3z"/></svg>';
+const tkIcon='<svg viewBox="0 0 24 24"><path d="M19.6 6.7a5 5 0 0 1-3.8-4.2V2h-3.3v13.5a2.9 2.9 0 1 1-2-2.7V9.4a6.2 6.2 0 1 0 5.3 6.1V8.7a8.2 8.2 0 0 0 4.6 1.4V6.8c-.2 0-.5 0-.8-.1z"/></svg>';
+const fbIcon='<svg viewBox="0 0 24 24"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4h-3v-3.5h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>';
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+async function load(){
+  const app=$('#app');
+  let data;
+  try{
+    const r=await fetch('data.json?ts='+Date.now(),{cache:'no-store'});
+    if(!r.ok) throw 0;
+    data=await r.json();
+    try{localStorage.setItem('qasas-data',JSON.stringify(data))}catch(e){}
+  }catch(e){
+    const saved=localStorage.getItem('qasas-data');
+    if(saved){data=JSON.parse(saved)}else{app.innerHTML='<div class="err">تعذر تحميل الفهرس. افتح التطبيق مرة واحدة وأنت متصل بالإنترنت.</div>';return}
+  }
+  render(data);
+}
+
+function render(data){
+  const app=$('#app');
+  let html='';
+  for(const p of data.prophets){
+    let eps='';
+    let total=0;
+    for(const ep of p.episodes){
+      total+=ep.parts.length;
+      let rows='';
+      for(const pt of ep.parts){
+        rows+='<div class="part">'
+          +'<span class="pn">الجزء '+pt.n+' من '+pt.of+'</span>'
+          +'<a class="btn yt" href="https://youtu.be/'+esc(pt.yt)+'" target="_blank" rel="noopener">'+ytIcon+' مشاهدة</a>'
+          +'<a class="btn tk" href="'+esc(data.channels.tiktok)+'" target="_blank" rel="noopener">'+tkIcon+' تيك توك</a>'
+          +'<a class="btn fb" href="'+esc(data.channels.facebook)+'" target="_blank" rel="noopener">'+fbIcon+' فيسبوك</a>'
+          +'</div>';
+      }
+      eps+='<div class="ep"><h3>'+esc(ep.title)+' <span class="cnt">'+ep.parts.length+' أجزاء</span></h3>'+rows+'</div>';
+    }
+    html+='<section class="prophet"><h2><span class="ord">'+String(p.order).padStart(2,'0')+'</span>'
+      +esc(p.name)+' <span class="cnt" style="color:var(--muted);font-size:13px;font-weight:400">'+total+' جزء</span></h2>'+eps+'</section>';
+  }
+  app.innerHTML=html||'<div class="err">لا توجد حلقات بعد</div>';
+  $('#chans').innerHTML=
+    '<a href="'+esc(data.channels.youtube)+'" target="_blank" rel="noopener">يوتيوب</a>'
+    +'<a href="'+esc(data.channels.tiktok)+'" target="_blank" rel="noopener">تيك توك</a>'
+    +'<a href="'+esc(data.channels.facebook)+'" target="_blank" rel="noopener">فيسبوك</a>';
+}
+
+// install prompt
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e; $('#installBtn').style.display='inline-block';
+});
+$('#installBtn').addEventListener('click',async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null;
+  $('#installBtn').style.display='none';
+});
+
+// offline indicator
+function net(){ $('#offlineBar').style.display=navigator.onLine?'none':'block' }
+window.addEventListener('online',net); window.addEventListener('offline',net); net();
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}) }
+load();
+</script>
+</body>
+</html>
