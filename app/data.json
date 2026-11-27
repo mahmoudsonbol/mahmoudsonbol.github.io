@@ -1,0 +1,44 @@
+{
+  "updated": "2026-11-27",
+  "channels": {
+    "youtube": "https://www.youtube.com/@MahmoudQasas",
+    "tiktok": "https://www.tiktok.com/@qisas_anbiya_7",
+    "facebook": "https://www.facebook.com/profile.php?id=61597094545066"
+  },
+  "prophets": [
+    {
+      "order": 1,
+      "name": "آدم عليه السلام",
+      "episodes": [
+        {
+          "n": 1,
+          "title": "قصة آدم",
+          "parts": [
+            { "n": 1, "of": 3, "yt": "XgsikDS9B4A" },
+            { "n": 2, "of": 3, "yt": "NV2QV4-3CqY" },
+            { "n": 3, "of": 3, "yt": "pfSpvDI3i6s" }
+          ]
+        },
+        {
+          "n": 2,
+          "title": "آدم ٢",
+          "parts": [
+            { "n": 1, "of": 4, "yt": "GaKL6C-Agk0" },
+            { "n": 2, "of": 4, "yt": "imUFy14Hy_4" },
+            { "n": 3, "of": 4, "yt": "znnQFNo14uo" },
+            { "n": 4, "of": 4, "yt": "5oNKNySuqW0" }
+          ]
+        },
+        {
+          "n": 3,
+          "title": "آدم ٣",
+          "parts": [
+            { "n": 1, "of": 3, "yt": "MLtECJrH6M4" },
+            { "n": 2, "of": 3, "yt": "sI9M6CUQ06Y" },
+            { "n": 3, "of": 3, "yt": "QdWAV5HKwVE" }
+          ]
+        }
+      ]
+    }
+  ]
+}
