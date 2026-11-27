@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>قصص الأنبياء</title>
-<meta name="description" content="حلقات قصص الأنبياء مرتبة بالأنبياء والأجزاء - شاهدها في أي وقت">
+<meta name="description" content="حلقات قصص الأنبياء مرتبة بالأنبياء والأجزاء - شاهدها أو حمّلها للمشاهدة بدون إنترنت">
 <meta name="theme-color" content="#0d3b2e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,7 +16,7 @@
   :root{
     --bg:#0b211a; --card:#123128; --card2:#0f2b22; --line:#1d4a3c;
     --gold:#d8b45a; --gold2:#b8933d; --txt:#f2ede1; --muted:#a8bfb4;
-    --yt:#ff0000; --tk:#25F4EE; --fb:#1877f2;
+    --yt:#ff0000; --fb:#1877f2;
   }
   *{box-sizing:border-box; margin:0; padding:0}
   body{
@@ -65,12 +65,23 @@
   .btn{
     display:inline-flex; align-items:center; gap:5px; text-decoration:none;
     font-size:12.5px; font-weight:700; border-radius:8px; padding:7px 11px;
-    color:#fff; border:none; cursor:pointer;
+    color:#fff; border:none; cursor:pointer; font-family:inherit;
   }
   .btn svg{width:14px; height:14px; fill:currentColor; flex:none}
   .btn.yt{background:var(--yt)}
   .btn.tk{background:#111; border:1px solid #333; color:#fff}
   .btn.fb{background:var(--fb)}
+  .btn.dl{background:#1d6b4f}
+  .btn.play{background:var(--gold); color:#1c1c1c}
+  .btn.del{background:#5a2323; font-size:11.5px; padding:7px 9px}
+  .btn:disabled{opacity:.55; cursor:default}
+  .dlbox{
+    margin-top:10px; background:var(--card2); border:1px dashed var(--line);
+    border-radius:10px; padding:10px;
+  }
+  .dlbar{height:8px; background:#0a1f18; border-radius:5px; overflow:hidden; margin-top:8px}
+  .dlbar>div{height:100%; background:var(--gold); width:0%; transition:width .2s}
+  .dlstat{color:var(--muted); font-size:12.5px; margin-top:6px}
   .note{
     background:var(--card2); border:1px dashed var(--line); border-radius:12px;
     padding:14px; color:var(--muted); font-size:13.5px; line-height:1.9; margin-top:8px;
@@ -84,22 +95,35 @@
   #chans{display:flex; gap:10px; justify-content:center; margin-top:10px; flex-wrap:wrap}
   #chans a{color:var(--muted); font-size:13px; text-decoration:underline}
   .err{color:#ffb3b3; text-align:center; padding:30px 10px; font-size:14px}
+  #playerOverlay{
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,.93);
+    z-index:50; flex-direction:column; align-items:center; justify-content:center; padding:14px;
+  }
+  #playerOverlay video{width:100%; max-width:900px; max-height:76vh; background:#000; border-radius:10px}
+  #playerBar{
+    width:100%; max-width:900px; display:flex; align-items:center; gap:10px;
+    margin-top:10px; color:var(--txt); font-size:14px;
+  }
+  #playerBar .t{flex:1; text-align:right}
+  #playerBar button{
+    background:var(--card); color:var(--txt); border:1px solid var(--line);
+    border-radius:8px; padding:8px 14px; font-size:14px; cursor:pointer; font-family:inherit;
+  }
 </style>
 </head>
 <body>
 <header>
   <h1>قصص الأنبياء</h1>
-  <p>الحلقات مرتبة بالأنبياء والأجزاء</p>
+  <p>الحلقات مرتبة بالأنبياء والأجزاء - شاهد أو حمّل للمشاهدة بدون إنترنت</p>
   <button id="installBtn">تثبيت التطبيق على الموبايل</button>
 </header>
-<div id="offlineBar">أنت غير متصل الآن - يمكنك تصفح الفهرس، والمشاهدة تحتاج إنترنت</div>
+<div id="offlineBar">أنت غير متصل - الحلقات المحمّلة تشتغل بدون إنترنت</div>
 <main id="app"><div class="err" id="loading">جاري التحميل...</div></main>
 <div style="max-width:720px;margin:0 auto;padding:0 14px">
   <div class="note">
-    <b>للمشاهدة بدون إنترنت:</b>
-    من تطبيق يوتيوب على الموبايل افتح الفيديو واضغط زر "تنزيل" (حسب توفرها في بلدك)،
-    أو حمّل الحلقات من جوجل درايف بخاصية "إتاحة بدون إنترنت".
-    فهرس التطبيق نفسه يعمل بدون إنترنت بعد أول فتح.
+    <b>المشاهدة بدون إنترنت:</b>
+    اضغط زر "تحميل الحلقة" تحت أي حلقة وهي متاحة، وبعد ما يخلص التحميل تقدر تتفرج عليها من التطبيق
+    من غير نت خالص. التحميل بيحصل مرة واحدة بس لكل حلقة تختارها.
   </div>
 </div>
 <footer>
@@ -108,57 +132,208 @@
   <div style="margin-top:14px"><a href="../">الموقع الرئيسي - قصص الأنبياء مكتوبة</a></div>
 </footer>
 
+<div id="playerOverlay">
+  <video id="pv" controls playsinline></video>
+  <div id="playerBar">
+    <button id="pClose">✕ إغلاق</button>
+    <span class="t" id="pTitle"></span>
+    <button id="pPrev">السابق</button>
+    <button id="pNext">التالي</button>
+  </div>
+</div>
+
 <script>
 const $=s=>document.querySelector(s);
+const VCACHE='qasas-videos-v1';
 const ytIcon='<svg viewBox="0 0 24 24"><path d="M23 7.5s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.3-1C16.6 4 12 4 12 4s-4.6 0-7.8.2c-.4.1-1.4.1-2.3 1-.7.7-.9 2.3-.9 2.3S.8 9.4.8 11.3v1.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2 .9 2.5 1 1.8.2 7.6.2 7.6.2s4.6 0 7.8-.2c.4-.1 1.4-.1 2.3-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-1.4c0-1.9-.2-3.8-.2-3.8zM9.8 15.1V8.4l6.2 3.4-6.2 3.3z"/></svg>';
 const tkIcon='<svg viewBox="0 0 24 24"><path d="M19.6 6.7a5 5 0 0 1-3.8-4.2V2h-3.3v13.5a2.9 2.9 0 1 1-2-2.7V9.4a6.2 6.2 0 1 0 5.3 6.1V8.7a8.2 8.2 0 0 0 4.6 1.4V6.8c-.2 0-.5 0-.8-.1z"/></svg>';
 const fbIcon='<svg viewBox="0 0 24 24"><path d="M24 12a12 12 0 1 0-13.9 11.9v-8.4h-3v-3.5h3V9.4c0-3 1.8-4.7 4.5-4.7 1.3 0 2.7.2 2.7.2v3h-1.5c-1.5 0-2 .9-2 1.9V12h3.4l-.5 3.5h-2.9v8.4A12 12 0 0 0 24 12z"/></svg>';
+const dlIcon='<svg viewBox="0 0 24 24"><path d="M12 3a1 1 0 0 1 1 1v9.6l3.3-3.3a1 1 0 1 1 1.4 1.4l-5 5a1 1 0 0 1-1.4 0l-5-5a1 1 0 1 1 1.4-1.4L11 13.6V4a1 1 0 0 1 1-1zM4 19h16a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2z"/></svg>';
+const playIcon='<svg viewBox="0 0 24 24"><path d="M8 5.5a1 1 0 0 1 1.5-.9l11 6.5a1 1 0 0 1 0 1.7l-11 6.5A1 1 0 0 1 8 18.5v-13z"/></svg>';
+
+let DATA=null;
+const dlState={};   // key -> {status:'none'|'downloading'|'done', doneParts:int,totalParts:int,bytes:int}
 
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function epKey(pi,ei){return 'p'+pi+'e'+ei}
+function partUrl(key,n){return '/offline/'+key+'/'+n+'.mp4'}
+function hasDl(ep){return ep.parts.every(p=>p.dl)}
 
 async function load(){
   const app=$('#app');
-  let data;
   try{
     const r=await fetch('data.json?ts='+Date.now(),{cache:'no-store'});
     if(!r.ok) throw 0;
-    data=await r.json();
-    try{localStorage.setItem('qasas-data',JSON.stringify(data))}catch(e){}
+    DATA=await r.json();
+    try{localStorage.setItem('qasas-data',JSON.stringify(DATA))}catch(e){}
   }catch(e){
     const saved=localStorage.getItem('qasas-data');
-    if(saved){data=JSON.parse(saved)}else{app.innerHTML='<div class="err">تعذر تحميل الفهرس. افتح التطبيق مرة واحدة وأنت متصل بالإنترنت.</div>';return}
+    if(saved){DATA=JSON.parse(saved)}else{app.innerHTML='<div class="err">تعذر تحميل الفهرس. افتح التطبيق مرة واحدة وأنت متصل بالإنترنت.</div>';return}
   }
-  render(data);
+  if(navigator.storage&&navigator.storage.persist){navigator.storage.persist().catch(()=>{})}
+  await scanDownloads();
+  render();
 }
 
-function render(data){
+async function scanDownloads(){
+  if(!DATA)return;
+  const c=await caches.open(VCACHE);
+  const keys=await c.keys();
+  const have=new Set(keys.map(k=>new URL(k.url).pathname));
+  DATA.prophets.forEach((p,pi)=>p.episodes.forEach((ep,ei)=>{
+    if(!hasDl(ep))return;
+    const key=epKey(pi,ei);
+    const n=ep.parts.filter(pt=>have.has(partUrl(key,pt.n))).length;
+    dlState[key]={status:n===ep.parts.length?'done':(n>0?'partial':'none'),doneParts:n,totalParts:ep.parts.length};
+  }));
+}
+
+function render(){
   const app=$('#app');
   let html='';
-  for(const p of data.prophets){
-    let eps='';
-    let total=0;
-    for(const ep of p.episodes){
+  DATA.prophets.forEach((p,pi)=>{
+    let eps=''; let total=0;
+    p.episodes.forEach((ep,ei)=>{
       total+=ep.parts.length;
+      const key=epKey(pi,ei);
+      const st=dlState[key];
       let rows='';
-      for(const pt of ep.parts){
+      ep.parts.forEach(pt=>{
+        let watchBtn='';
+        if(pt.dl){
+          watchBtn='<button class="btn play" onclick="playPart('+pi+','+ei+','+pt.n+')">'+playIcon+' مشاهدة</button>';
+        }
+        if(pt.yt){
+          watchBtn+='<a class="btn yt" href="https://youtu.be/'+esc(pt.yt)+'" target="_blank" rel="noopener">'+ytIcon+' يوتيوب</a>';
+        }
         rows+='<div class="part">'
           +'<span class="pn">الجزء '+pt.n+' من '+pt.of+'</span>'
-          +'<a class="btn yt" href="https://youtu.be/'+esc(pt.yt)+'" target="_blank" rel="noopener">'+ytIcon+' مشاهدة</a>'
-          +'<a class="btn tk" href="'+esc(data.channels.tiktok)+'" target="_blank" rel="noopener">'+tkIcon+' تيك توك</a>'
-          +'<a class="btn fb" href="'+esc(data.channels.facebook)+'" target="_blank" rel="noopener">'+fbIcon+' فيسبوك</a>'
+          +watchBtn
+          +'<a class="btn tk" href="'+esc(DATA.channels.tiktok)+'" target="_blank" rel="noopener">'+tkIcon+' تيك توك</a>'
+          +'<a class="btn fb" href="'+esc(DATA.channels.facebook)+'" target="_blank" rel="noopener">'+fbIcon+' فيسبوك</a>'
           +'</div>';
+      });
+      let dlRow='';
+      if(hasDl(ep)){
+        if(st&&st.status==='done'){
+          dlRow='<div class="dlbox"><button class="btn play" onclick="playPart('+pi+','+ei+','+ep.parts[0].n+')">'+playIcon+' مشاهدة بدون نت (محمّلة ✔)</button> '
+            +'<button class="btn del" onclick="delEp('+pi+','+ei+')">حذف التحميل</button></div>';
+        }else if(st&&st.status==='downloading'){
+          dlRow='<div class="dlbox"><button class="btn dl" disabled>'+dlIcon+' جاري التحميل...</button>'
+            +'<div class="dlbar"><div id="bar-'+key+'"></div></div>'
+            +'<div class="dlstat" id="stat-'+key+'"></div></div>';
+        }else{
+          dlRow='<div class="dlbox"><button class="btn dl" onclick="dlEp('+pi+','+ei+')">'+dlIcon+' تحميل الحلقة للمشاهدة بدون نت</button></div>';
+        }
       }
-      eps+='<div class="ep"><h3>'+esc(ep.title)+' <span class="cnt">'+ep.parts.length+' أجزاء</span></h3>'+rows+'</div>';
-    }
+      eps+='<div class="ep"><h3>'+esc(ep.title)+' <span class="cnt">'+ep.parts.length+' أجزاء</span></h3>'+rows+dlRow+'</div>';
+    });
     html+='<section class="prophet"><h2><span class="ord">'+String(p.order).padStart(2,'0')+'</span>'
       +esc(p.name)+' <span class="cnt" style="color:var(--muted);font-size:13px;font-weight:400">'+total+' جزء</span></h2>'+eps+'</section>';
-  }
+  });
   app.innerHTML=html||'<div class="err">لا توجد حلقات بعد</div>';
   $('#chans').innerHTML=
-    '<a href="'+esc(data.channels.youtube)+'" target="_blank" rel="noopener">يوتيوب</a>'
-    +'<a href="'+esc(data.channels.tiktok)+'" target="_blank" rel="noopener">تيك توك</a>'
-    +'<a href="'+esc(data.channels.facebook)+'" target="_blank" rel="noopener">فيسبوك</a>';
+    '<a href="'+esc(DATA.channels.youtube)+'" target="_blank" rel="noopener">يوتيوب</a>'
+    +'<a href="'+esc(DATA.channels.tiktok)+'" target="_blank" rel="noopener">تيك توك</a>'
+    +'<a href="'+esc(DATA.channels.facebook)+'" target="_blank" rel="noopener">فيسبوك</a>';
+  // restore progress for any in-flight downloads
+  DATA.prophets.forEach((p,pi)=>p.episodes.forEach((ep,ei)=>{
+    const key=epKey(pi,ei), st=dlState[key];
+    if(st&&st.status==='downloading')updProgress(key);
+  }));
 }
+
+function updProgress(key){
+  const st=dlState[key]; if(!st)return;
+  const bar=document.getElementById('bar-'+key);
+  const stat=document.getElementById('stat-'+key);
+  if(bar)bar.style.width=Math.round(100*st.doneParts/st.totalParts)+'%';
+  if(stat)stat.textContent='تم تحميل '+st.doneParts+' من '+st.totalParts+' أجزاء ('+Math.round(st.bytes/1048576)+' ميجا)';
+}
+
+async function dlEp(pi,ei){
+  const ep=DATA.prophets[pi].episodes[ei];
+  const key=epKey(pi,ei);
+  const st=dlState[key];
+  if(st&&st.status==='downloading')return;
+  dlState[key]={status:'downloading',doneParts:0,totalParts:ep.parts.length,bytes:0};
+  render();
+  const c=await caches.open(VCACHE);
+  for(const pt of ep.parts){
+    const u=partUrl(key,pt.n);
+    if(await c.match(u)){dlState[key].doneParts++;updProgress(key);continue}
+    try{
+      const res=await fetch(pt.dl);
+      if(!res.ok)throw new Error('HTTP '+res.status);
+      const reader=res.body.getReader();
+      const chunks=[];let len=0;
+      for(;;){
+        const x=await reader.read();
+        if(x.done)break;
+        chunks.push(x.value);len+=x.value.length;
+        dlState[key].bytes+=x.value.length;
+        updProgress(key);
+      }
+      const blob=new Blob(chunks,{type:'video/mp4'});
+      await c.put(u,new Response(blob,{headers:{'Content-Type':'video/mp4'}}));
+      dlState[key].doneParts++;
+      updProgress(key);
+    }catch(e){
+      dlState[key].status='none';
+      render();
+      alert('التحميل اتقطع: '+(e.message||e)+'\nجرّب تاني وأنت متصل بنت كويس.');
+      return;
+    }
+  }
+  dlState[key].status='done';
+  render();
+}
+
+async function delEp(pi,ei){
+  const ep=DATA.prophets[pi].episodes[ei];
+  const key=epKey(pi,ei);
+  const c=await caches.open(VCACHE);
+  for(const pt of ep.parts)await c.delete(partUrl(key,pt.n));
+  dlState[key]={status:'none',doneParts:0,totalParts:ep.parts.length};
+  render();
+}
+
+// ---- player ----
+let curPlay=null; // {pi,ei,idx}
+async function playPart(pi,ei,partN){
+  const ep=DATA.prophets[pi].episodes[ei];
+  const idx=ep.parts.findIndex(p=>p.n===partN);
+  if(idx<0)return;
+  curPlay={pi,ei,idx};
+  const pt=ep.parts[idx];
+  const key=epKey(pi,ei);
+  const v=$('#pv');
+  const cached=await caches.open(VCACHE).then(c=>c.match(partUrl(key,pt.n)));
+  if(cached){
+    const blob=await cached.blob();
+    v.src=URL.createObjectURL(blob);
+  }else{
+    v.src=pt.dl;
+  }
+  $('#pTitle').textContent=ep.title+' - الجزء '+pt.n+' من '+pt.of+(cached?' (بدون إنترنت ✔)':'');
+  $('#pPrev').disabled=idx===0;
+  $('#pNext').disabled=idx===ep.parts.length-1;
+  $('#playerOverlay').style.display='flex';
+  v.play().catch(()=>{});
+}
+function stepPart(d){
+  if(!curPlay)return;
+  const ep=DATA.prophets[curPlay.pi].episodes[curPlay.ei];
+  const ni=curPlay.idx+d;
+  if(ni<0||ni>=ep.parts.length)return;
+  playPart(curPlay.pi,curPlay.ei,ep.parts[ni].n);
+}
+$('#pClose').addEventListener('click',()=>{
+  const v=$('#pv');v.pause();v.removeAttribute('src');v.load();
+  $('#playerOverlay').style.display='none';curPlay=null;
+});
+$('#pPrev').addEventListener('click',()=>stepPart(-1));
+$('#pNext').addEventListener('click',()=>stepPart(1));
 
 // install prompt
 let deferredPrompt=null;
